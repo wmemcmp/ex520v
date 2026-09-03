@@ -1,6 +1,7 @@
 # OpenWrt for TP-Link EX520v (TTNET AX3000)
 
 [TR] TP-Link EX520v v1 (TTNET / Türk Telekom AX3000 Wi-Fi 6 Router) için OpenWrt portlama projesi.
+
 [EN] OpenWrt porting project for TP-Link EX520v v1 (TTNET / Türk Telekom AX3000 Wi-Fi 6 Router).
 
 ---
@@ -66,7 +67,7 @@
 **[TR]:** Gelişmeleri takip etmek, soru sormak veya geri bildirimde bulunmak için Techolay üzerindeki konuyu ziyaret edebilirsiniz:  
 **[EN]:** You can follow the discussion or provide feedback on the community thread:
 
-* 🔗 **Techolay Konusu / Forum Thread:** [Techolay - TP-Link EX520v OpenWrt Tartışma Konusu](https://techolay.net)
+* 🔗 **Techolay Konusu / Forum Thread:** [Techolay - TP-Link EX520v OpenWrt Konusu]([https://techolay.net](https://techolay.net/sosyal/konu/tp-link-ex520v-openwrt-kurulumu.214971/))
 
 ---
 
