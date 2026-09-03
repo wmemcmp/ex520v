@@ -67,7 +67,7 @@
 **[TR]:** Gelişmeleri takip etmek, soru sormak veya geri bildirimde bulunmak için Techolay üzerindeki konuyu ziyaret edebilirsiniz:  
 **[EN]:** You can follow the discussion or provide feedback on the community thread:
 
-* 🔗 **Techolay Konusu / Forum Thread:** [Techolay - TP-Link EX520v OpenWrt Konusu]([https://techolay.net](https://techolay.net/sosyal/konu/tp-link-ex520v-openwrt-kurulumu.214971/))
+* 🔗 **Techolay Konusu / Forum Thread:** [Techolay - TP-Link EX520v OpenWrt Konusu](https://techolay.net/sosyal/konu/tp-link-ex520v-openwrt-kurulumu.214971/)
 
 ---
 
