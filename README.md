@@ -7,10 +7,10 @@
 ---
 
 > 📢 **Duyuru / Announcement**
->
-> **[TR]:** Portlama süreci tamamlanmış ve tüm testlerden başarıyla geçmiştir. Derlenmiş imaj dosyaları ve aşağıdaki adım adım kurulum rehberi artık bu depoda yayında. Sorularınız için Techolay konusuna göz atabilirsiniz.
->
-> **[EN]:** The porting process is complete and fully verified. Pre-compiled images and the step-by-step installation guide below are now available in this repository. For questions, check the Techolay community thread.
+> 
+> **[TR]:** Portlama süreci tamamlanmış ve tüm testlerden başarıyla geçmiştir. Derlenmiş imaj dosyaları ve aşağıdaki adım-by-adım kurulum rehberi artık bu depoda yayında. Sorularınızı ve geri bildirimlerinizi Techolay forumundaki başlık üzerinden paylaşabilirsiniz.
+> 
+> **[EN]:** The porting process is complete and fully verified. Pre-compiled images and the step-by-step installation guide below are now available in this repository. For questions, check the Techolay thread linked below.
 
 ---
 
@@ -33,7 +33,7 @@
 **[TR]**
 * **Taban:** Güncel OpenWrt `SNAPSHOT` trunk mimarisi.
 * **Wi-Fi:** 5 GHz üzerinde 160 MHz bant genişliği (`HE160`) ve DFS kanalları tam aktif. Eşzamanlı çift bant AP (`2.4 GHz HE40 + 5 GHz HE160`).
-* **Donanım Hızlandırma:** Donanımsal paket yönlendirme (PPE / WED - Wireless Ethernet Dispatcher) aktif. Ayarları **Network → Firewall → General Settings** altındaki "Software Flow Offloading" / "Hardware Flow Offloading" seçenekleriyle yönetebilirsiniz.
+* **Donanım Hızlandırma:** Donanımsal paket yönlendirme (PPE / WED - Wireless Ethernet Dispatcher) aktif. Ayarları **Network → Firewall → General Settings** altındaki "Software Flow Offloading" bölümünden kontrol edebilirsiniz.
 * **Ağ ve Çevre Birimleri:** Switch (LAN1-LAN3), WAN, USB 3.0, Sistem LED'leri ve Reset / WPS butonları sorunsuz çalışıyor.
 * **Depolama ve Kalıcılık:** NMBM destekli kalıcı overlay yapısı (`UBI rootfs_data`).
 * **Özel DTS & Bootloader Güvenliği:** Stok BL2 / FIP / birincil U-Boot yapılarına dokunulmaz. Fabrika RF kalibrasyon verileri doğrudan `misc_ro` üzerinden okunur.
@@ -50,9 +50,9 @@
 
 ## Kurulum Adımları / Installation Guide
 
-**[TR]** Kurulum, cihazın seri (UART) konsoluna erişim gerektirir. Stok bootloader'a hiçbir şekilde dokunulmaz; imaj yalnızca TFTP ile RAM'e çekilip test edilir, ardından SSH üzerinden sysupgrade ile kalıcı hâle getirilir. Bu nedenle brick riski oldukça düşüktür, ancak yine de kendi sorumluluğunuzda ilerleyin.
+**[TR]** Kurulum, cihazın seri (UART) konsoluna erişim gerektirir. Stok bootloader'a hiçbir şekilde dokunulmaz; imaj yalnızca TFTP ile RAM'e çekilip test edilir, ardından SSH üzerinden sysupgrade ile NAND'e yazılır.
 
-**[EN]** Installation requires access to the device's UART serial console. The stock bootloader is never modified; the image is first pulled into RAM over TFTP and booted for testing, then made permanent via `sysupgrade` over SSH. Brick risk is therefore low, but proceed at your own responsibility.
+**[EN]** Installation requires access to the device's UART serial console. The stock bootloader is never modified; the image is first pulled into RAM over TFTP and booted for testing, then permanently flashed using sysupgrade.
 
 ### 1) Gerekli Malzemeler / Requirements
 
@@ -77,12 +77,12 @@
 ### 2) UART Erişimi / UART Access
 
 **[TR]**
-Pinout, kartın üzerindeki fotoğrafta aşağıda gösterilmiştir. **RX ve TX sinyallerinin ilgili pinlere ulaşabilmesi için, kart üzerinde birbirinden ayrı duran iki pad'in köprülenmesi (bridge) gerekir.** Bu köprüleme için lehim şart değildir:
+Pinout, kartın üzerindeki fotoğrafta aşağıda gösterilmiştir. **RX ve TX sinyallerinin ilgili pinlere ulaşabilmesi için, kart üzerinde birbirinden ayrı duran iki pad'in köprülenmesi gerekir.**
 
 * Görseldeki pinlere erkek header'lı jumper kablonun uçlarını sıkıca oturtup üzerlerine bir sigara paketi veya benzeri hafif bir ağırlık koymak çoğu zaman yeterlidir.
 * Cihazı tek seferlik portlayacaksanız bu yöntem yeterlidir. Birden fazla deneme/test yapacaksanız, bağlantının sürekli ve sağlam kalması için pinleri lehimlemeniz tavsiye edilir.
 
-> ⚠️ Sadece **RX**, **TX** ve **GND** hatlarını bağlayın; adaptörün **VCC/3.3V** ucunu cihaza bağlamayın. Ayrıca adaptörünüzün **RX**'ini kartın **TX**'ine, **TX**'ini kartın **RX**'ine çapraz bağlamayı unutmayın.
+> ⚠️ Sadece **RX**, **TX** ve **GND** hatlarını bağlayın; adaptörün **VCC/3.3V** ucunu cihaza bağlamayın. Ayrıca adaptörünüzün **RX**'ini kartın **TX**'ine, **TX**'ini kartın **RX**'ine bağlayın.
 
 **UART pin bölgesi ve köprülenmesi gereken pad'ler:**
 
@@ -113,14 +113,23 @@ Flow control: None
 
 ### 3) Bootloader Üzerinden TFTP ile İmajı Belleğe Çekme / Boot the initramfs Image via TFTP
 
-**[TR]** Cihazı açın, bootloader (U-Boot) menüsüne girin ve ana bilgisayarınızda çalışan bir TFTP sunucusundan initramfs imajını RAM'e çekip başlatın:
+**[TR]** Cihazı açın, bootloader (U-Boot) menüsüne girin ve ana bilgisayarınızda çalışan bir TFTP sunucusundan initramfs imajını RAM'e çekip başlatın.
 
-**[EN]** Power on the device, interrupt boot to enter the U-Boot prompt, and pull the initramfs image from a TFTP server running on your host, then boot it directly from RAM:
+> Not: Bootloader'ın ve cihazın TFTP beklentisi nedeniyle ana bilgisayarınızın (tftpd sunucusunun çalıştığı PC) sabit IP adresinin bu örnekte 192.168.1.2 olarak ayarlanması önerilir.
+
+**[EN]** Power on the device, interrupt boot to enter the U-Boot prompt, and pull the initramfs image from a TFTP server running on your host, then boot it directly from RAM.
+
+> Note: Because the bootloader expects the host to be on the same subnet, set your host (the PC running the TFTP server) to a static IP of 192.168.1.2 for this example.
 
 ```bash
+# Örnek U-Boot komutları / Example U-Boot commands
+setenv ipaddr 192.168.1.1
+setenv serverip 192.168.1.2
 tftpboot 0x46000000 openwrt-mediatek-filogic-tplink_ex520v-initramfs-kernel.bin
 bootm 0x46000000
 ```
+
+![Host with static IP 192.168.1.2](https://raw.githubusercontent.com/wmemcmp/ex520v/refs/heads/main/gallery/static.png)
 
 **[TR]** Bu adımda NAND'e hiçbir şey yazılmaz; cihaz yalnızca RAM üzerinden geçici olarak OpenWrt ile açılır. Bootloader ve mevcut stok firmware tamamen dokunulmadan kalır.
 
@@ -145,9 +154,9 @@ ssh root@192.168.1.1
 sysupgrade -n /tmp/openwrt-mediatek-filogic-tplink_ex520v-squashfs-sysupgrade.bin
 ```
 
-**[TR]** `-n` bayrağı, mevcut ayarları koruma girişiminde bulunmadan temiz bir kurulum yapılmasını sağlar (ilk kurulum için önerilir). Bu komut sysupgrade imajını NAND'e yazar ve bölümlemeyi kalıcı hâle getirir; işlem tamamlandığında cihaz kendini yeniden başlatır ve bundan sonra doğrudan NAND üzerinden OpenWrt ile açılır — artık TFTP/UART'a ihtiyaç kalmaz.
+**[TR]** `-n` bayrağı, mevcut ayarları koruma girişiminde bulunmadan temiz bir kurulum yapılmasını sağlar (ilk kurulum için önerilir). Bu komut sysupgrade imajını NAND'e yazar ve bölümlendirmeyi günceller.
 
-**[EN]** The `-n` flag performs a clean install without attempting to preserve existing settings (recommended for the first flash). This command writes the sysupgrade image to NAND and makes the partitioning permanent; once complete, the device reboots and from then on boots OpenWrt directly from NAND — no more TFTP/UART needed.
+**[EN]** The `-n` flag performs a clean install without attempting to preserve existing settings (recommended for the first flash). This command writes the sysupgrade image to NAND and updates partitions.
 
 ### 5) Doğrulama / Verification
 
@@ -161,7 +170,7 @@ sysupgrade -n /tmp/openwrt-mediatek-filogic-tplink_ex520v-squashfs-sysupgrade.bi
 * Confirm you can SSH back into the device at `ssh root@192.168.1.1`.
 * Check the model and image info with `ubus call system board`.
 * Verify both Wi-Fi radios (2.4 GHz and 5 GHz) appear under **Network → Wireless** in LuCI.
-* Enable/verify hardware offloading under **Network → Firewall → General Settings** (see the HW Offloading screenshot below).
+* Enable/verify hardware offloading under **Network → Firewall → General Settings → Software/Hardware Flow Offloading** (see the HW Offloading screenshot below).
 
 ![Hardware Flow Offloading](https://raw.githubusercontent.com/wmemcmp/ex520v/refs/heads/main/gallery/image.png)
 
@@ -170,12 +179,12 @@ sysupgrade -n /tmp/openwrt-mediatek-filogic-tplink_ex520v-squashfs-sysupgrade.bi
 ## Sorun Giderme / Troubleshooting
 
 **[TR]**
-* **TFTP zaman aşımına uğruyor:** Ana bilgisayarınızın IP adresinin bootloader'ın beklediği alt ağda olduğundan (genelde `192.168.1.x`) ve TFTP sunucunuzun/güvenlik duvarınızın 69/UDP portunu bloklamadığından emin olun.
+* **TFTP zaman aşımına uğruyor:** Ana bilgisayarınızın IP adresinin bootloader'ın beklediği alt ağda olduğundan (genelde `192.168.1.x`) ve TFTP sunucunuzun/güvenlik duvarınızın 69/UDP portunu engellemediğinden emin olun. Bu rehberdeki örnekler için ana bilgisayarın `192.168.1.2` statik IP'si kullanılmaktadır.
 * **Seri konsolda çıktı görünmüyor:** Baud hızının `115200` olduğunu, RX/TX hatlarının çapraz bağlandığını ve GND hattının ortak olduğunu kontrol edin.
 * **`sysupgrade` sonrası cihaza erişilemiyor:** Birkaç dakika bekleyin (ilk açılışta overlay/UBI hazırlığı zaman alabilir); yine erişilemiyorsa UART üzerinden log kontrolü yapın.
 
 **[EN]**
-* **TFTP times out:** Make sure your host's IP is on the subnet the bootloader expects (usually `192.168.1.x`) and that port 69/UDP isn't blocked by your TFTP server or firewall.
+* **TFTP times out:** Make sure your host's IP is on the subnet the bootloader expects (usually `192.168.1.x`) and that port 69/UDP isn't blocked by your TFTP server or firewall. This guide uses `192.168.1.2` as the host static IP in examples.
 * **No output on the serial console:** Check that the baud rate is `115200`, RX/TX lines are crossed correctly, and GND is shared between the adapter and the board.
 * **Device unreachable after `sysupgrade`:** Wait a few minutes (first boot can take longer while UBI/overlay is prepared); if it's still unreachable, check the logs over UART.
 
@@ -192,6 +201,6 @@ sysupgrade -n /tmp/openwrt-mediatek-filogic-tplink_ex520v-squashfs-sysupgrade.bi
 
 ## Sorumluluk Reddi / Disclaimer
 
-**[TR]:** Cihazınıza üçüncü taraf yazılım yüklemek kendi sorumluluğunuzdadır. İşlemlere başlamadan önce mevcut partisyonların yedeklerini almanız ve garanti kapsamınızın etkilenebileceğini bilmeniz önerilir.
+**[TR]:** Cihazınıza üçüncü taraf yazılım yüklemek kendi sorumluluğunuzdadır. İşlemlere başlamadan önce mevcut partisyonların yedeklerini almanız ve garanti kapsamınızın etkilenebileceğini unutmayın.
 
 **[EN]:** Flashing custom firmware is at your own risk. Always maintain full partition backups before proceeding, and be aware that this process may affect your warranty.
