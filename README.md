@@ -1,8 +1,8 @@
-# OpenWrt for TP-Link EX520v (TTNET AX3000)
+# OpenWrt for TP-Link EX520v
 
-[TR] TP-Link EX520v v1 (TTNET / Türk Telekom AX3000 Wi-Fi 6 Router) için OpenWrt portlama projesi.
+[TR] TP-Link EX520v için OpenWrt port projesi
 
-[EN] OpenWrt porting project for TP-Link EX520v v1 (TTNET / Türk Telekom AX3000 Wi-Fi 6 Router).
+[EN] OpenWrt porting project for TP-Link EX520v
 
 ---
 
