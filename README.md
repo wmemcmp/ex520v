@@ -172,7 +172,7 @@ sysupgrade -n /tmp/openwrt-mediatek-filogic-tplink_ex520v-squashfs-sysupgrade.bi
 * Verify both Wi-Fi radios (2.4 GHz and 5 GHz) appear under **Network → Wireless** in LuCI.
 * Enable/verify hardware offloading under **Network → Firewall → General Settings → Software/Hardware Flow Offloading** (see the HW Offloading screenshot below).
 
-![Hardware Flow Offloading](hwoffloadingtest)
+![Hardware Flow Offloading](https://raw.githubusercontent.com/wmemcmp/ex520v/refs/heads/main/gallery/hwoffloadingtest.png)
 
 ---
 
